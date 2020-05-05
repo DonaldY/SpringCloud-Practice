@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: config-server
+
+eureka:
+  client:
+    register-with-eureka: true #注册到Eureka的注册中心
+    fetch-registry: true #获取注册实例列表
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: config-server
+    prefer-ip-address: true
+
+server:
+  port: 8777
