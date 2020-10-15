@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ConfigServer" />
         <module name="EurekaClient" />
+        <module name="Gateway" />
         <module name="SpringCloud" />
         <module name="configserver" />
         <module name="eurekaserver" />
@@ -20,6 +21,8 @@
       <module name="EurekaClient" target="1.8" />
       <module name="eurekaclient" target="1.8" />
       <module name="eurekaserver" target="1.8" />
+      <module name="Gateway" target="1.8" />
+      <module name="NacosClient" target="1.8" />
       <module name="SpringCloud" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -27,6 +30,8 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ConfigServer" options="-parameters" />
       <module name="EurekaClient" options="-parameters" />
+      <module name="Gateway" options="-parameters" />
+      <module name="NacosClient" options="-parameters" />
       <module name="SpringCloud" options="-parameters" />
       <module name="configserver" options="-parameters" />
       <module name="eurekaclient" options="-parameters" />
