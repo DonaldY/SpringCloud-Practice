@@ -1,0 +1,20 @@
+
+server:
+  port: 8888
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: limit_route
+          uri: http://127.0.0.1:8081
+          predicates:
+            - Path=/hello/**
+          filters:
+            - name: RequestBodyOperationFactory
+
+  application:
+    name: gateway-limiter
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
