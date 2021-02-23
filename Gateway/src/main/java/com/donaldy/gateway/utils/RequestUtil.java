@@ -1,16 +1,9 @@
-package com.donaldy.gateway.filter;
+package com.donaldy.gateway.utils;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -18,37 +11,9 @@ import java.util.regex.Pattern;
 
 /**
  * @author donald
- * @date 2021/02/22
+ * @date 2021/02/23
  */
-@Slf4j
-public class RequestBodyOperationFilter implements GatewayFilter, Ordered {
-
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
-        ServerHttpRequest request = exchange.getRequest();
-
-        String contentType = request.getHeaders().getFirst("Content-Type");
-
-        if (request.getMethod() != HttpMethod.POST || "multipart/form-data".equals(contentType)) {
-
-            return chain.filter(exchange);
-        }
-
-        String bodyContent = RequestUtil.resolveBodyFromRequest(exchange.getRequest());
-
-        return chain.filter(exchange.mutate().build());
-    }
-
-    @Override
-    public int getOrder() {
-
-        return -1;
-    }
-}
-
-
-class RequestUtil {
+public class RequestUtil {
     /**
      * 读取body内容
      * @param serverHttpRequest

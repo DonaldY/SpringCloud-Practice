@@ -50,6 +50,12 @@
             <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
         </dependency>
 
+        <!-- 改为下面这个也可以，尝试过了 -->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+        </dependency>-->
+
 
         <!--
         修复：Spring Cloud Hoxton.SR1 gateway 与reactor-netty 0.9.3.RELEASE不兼容问题

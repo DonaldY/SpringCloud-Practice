@@ -1,21 +1,19 @@
 package com.donaldy.gateway;
 
+
+import com.donaldy.gateway.utils.RequestUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.core.io.buffer.NettyDataBuffer;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SpringBootApplication
 public class GatewayApplication {
@@ -24,19 +22,58 @@ public class GatewayApplication {
         SpringApplication.run(GatewayApplication.class, args);
     }
 
-    @Bean(name = "remoteAddrKeyResolver")
-    public RemoteAddrKeyResolver remoteAddrKeyResolver() {
+    @Bean(name = "ideKeyResolver")
+    public IdeKeyResolver ideKeyResolver() {
 
-        return new RemoteAddrKeyResolver();
+        return new IdeKeyResolver();
     }
 
-    class RemoteAddrKeyResolver implements KeyResolver {
+    class IdeKeyResolver implements KeyResolver {
 
         @Override
         public Mono<String> resolve(ServerWebExchange exchange) {
+
+            ServerHttpRequest request = exchange.getRequest();
+
+            String contentType = request.getHeaders().getFirst("Content-Type");
+
+            if (request.getMethod() != HttpMethod.POST || "multipart/form-data".equals(contentType)) {
+
+                return Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
+            }
+
+            String bodyContent = RequestUtil.resolveBodyFromRequest(exchange.getRequest());
+
+            ObjectMapper JSON_MAPPER = new ObjectMapper();
+
+            try {
+                Test test = JSON_MAPPER.readValue(bodyContent, Test.class);
+
+                System.out.println("test appId : " + test.getAppId());
+
+                return Mono.just(test.getAppId());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
 
             return Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
         }
 
     }
+}
+
+/**
+ * {
+ *   "appId": "20190828163922073733756",
+ *   "orgId": "org_1331212",
+ *   "responseType": "code"
+ * }
+ */
+@Data
+class Test {
+
+    private String appId;
+    private String orgId;
+    private String responseType;
 }

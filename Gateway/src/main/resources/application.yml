@@ -10,8 +10,11 @@ spring:
           predicates:
             - Path=/hello/**
           filters:
-            - name: RequestBodyOperationFactory
-
+            - name: RequestRateLimiter
+              args:
+                key-resolver: '#{@ideKeyResolver}'
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 3
   application:
     name: gateway-limiter
   redis:
