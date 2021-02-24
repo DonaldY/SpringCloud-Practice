@@ -10,6 +10,7 @@ spring:
           predicates:
             - Path=/hello/**
           filters:
+            - name: CacheBodyFactory
             - name: RequestRateLimiter
               args:
                 key-resolver: '#{@ideKeyResolver}'

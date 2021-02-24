@@ -1,39 +1,33 @@
 package com.donaldy.gateway.filter;
 
-/**
- * @author donald
- * @date 2021/02/22
- */
-
+import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * 这个过滤器解决body不能重复读的问题
- * 实际上这里没必要把body的内容放到attribute中去，因为从attribute取出body内容还是需要强转成
- * Flux<DataBuffer>,然后转换成String,和直接读取body没有什么区别
+ * 自定义缓存请求体 过滤器
+ *
+ * @author donald
+ * @date 2021/02/24
  */
-@Component
-public class CacheBodyGlobalFilter implements Ordered, GlobalFilter {
+public class CacheBodyFilter implements Ordered, GatewayFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        return chain.filter(exchange);
-
-        /*if (exchange.getRequest().getHeaders().getContentType() == null) {
+        if (exchange.getRequest().getHeaders().getContentType() == null) {
 
             return chain.filter(exchange);
         }
+
+        System.out.println("I'm here!!!");
 
         return DataBufferUtils.join(exchange.getRequest().getBody())
                 .flatMap(dataBuffer -> {
@@ -49,7 +43,7 @@ public class CacheBodyGlobalFilter implements Ordered, GlobalFilter {
                     };
 
                     return chain.filter(exchange.mutate().request(mutatedRequest).build());
-                });*/
+                });
     }
 
     @Override
