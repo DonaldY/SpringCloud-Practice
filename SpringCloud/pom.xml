@@ -12,6 +12,8 @@
         <module>eureka-server</module>
         <module>serviceA</module>
         <module>serviceB</module>
+        <module>greeting-server</module>
+        <module>greeting-client</module>
     </modules>
 
 </project>
